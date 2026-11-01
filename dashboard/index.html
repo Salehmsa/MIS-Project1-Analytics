@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MIS — لوحة القيادة التنفيذية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#F3F5F2;--panel:#fff;--ink:#12231E;--muted:#5B6B65;--line:#DCE2DD;--soft:#EEF1EE;--thbg:#FAFBFA;--head:#12231E;
+--green:#0F6B53;--blue:#3A5F82;--amber:#C98200;--red:#B3261E;--gray:#B8BDB9;--chipbg:#EFEFEA;
+--goodbg:#DDEFE8;--goodfg:#0B5A44;--badbg:#F8DFDC;--badfg:#8E1B14;--medbg:#FBEBC8;--medfg:#7A5200;--lowbg:#E7ECEF;--lowfg:#34495E;--segon:#12231E;--segfg:#fff}
+:root[data-theme="dark"]{color-scheme:dark;--paper:#0D1613;--panel:#15231E;--ink:#E7EFEB;--muted:#9AAEA5;--line:#2A3C36;--soft:#1F302A;--thbg:#1A2B25;--head:#09100E;
+--green:#3FB68B;--blue:#6FA3D1;--amber:#E3A83C;--red:#F0726A;--gray:#53645E;--chipbg:#22342D;
+--goodbg:#15402F;--goodfg:#7FE0B8;--badbg:#4A2220;--badfg:#FFA9A2;--medbg:#4A3A12;--medfg:#F2CB74;--lowbg:#26363F;--lowfg:#B7CAD6;--segon:#3FB68B;--segfg:#06130E}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'IBM Plex Sans Arabic','Segoe UI',Tahoma,sans-serif;font-size:15px;line-height:1.55}
+button,select,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate;display:inline-block}
+.wrap{max-width:1280px;margin:0 auto;padding:0 20px}
+header.top{background:var(--head);color:#fff;padding:22px 0 20px}
+header.top .wrap{display:flex;gap:16px;justify-content:space-between;align-items:flex-end;flex-wrap:wrap}
+header.top h1{margin:0;font-size:26px;font-weight:700;letter-spacing:0}
+header.top p{margin:4px 0 0;color:#B9C9C2;font-size:14px}
+.langbtn{background:transparent;border:1px solid #4C6A60;color:#fff;border-radius:4px;padding:6px 14px;cursor:pointer}
+.langbtn:hover{background:#1E3A31}
+.hbtns{display:flex;gap:8px}
+.bar{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--line)}
+.filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:10px 0}
+.filters label{display:flex;flex-direction:column;font-size:12px;color:var(--muted);gap:2px}
+.filters select{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:6px 10px;min-width:130px;font-size:14px}
+.filters .reset{margin-inline-start:auto;background:none;border:none;color:var(--green);cursor:pointer;text-decoration:underline;font-size:14px}
+nav.tabs{display:flex;gap:2px;overflow-x:auto}
+nav.tabs button{background:none;border:none;border-bottom:3px solid transparent;padding:10px 16px;cursor:pointer;color:var(--muted);font-weight:500;white-space:nowrap}
+nav.tabs button:hover{color:var(--ink)}
+nav.tabs button.on{color:var(--ink);border-bottom-color:var(--green);font-weight:600}
+main{padding:20px 0 40px;display:flex;flex-direction:column;gap:16px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:16px 18px;min-width:0}
+.panel h3{margin:0 0 2px;font-size:16px;font-weight:600}
+.panel .sub{margin:0 0 12px;color:var(--muted);font-size:13px}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:16px}
+.g21{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:16px}
+@media(max-width:900px){.g21{grid-template-columns:1fr}}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.kpi{background:var(--panel);padding:14px 16px}
+.kl{font-size:13px;color:var(--muted)}
+.kv{font-size:28px;font-weight:600;line-height:1.25;margin-top:2px}
+.ks{font-size:12.5px;color:var(--muted);margin-top:2px}
+.t-red{color:var(--red)}.t-amber{color:var(--amber)}.t-green{color:var(--green)}
+.bk .r{display:grid;grid-template-columns:8.6rem minmax(40px,1fr) 4.6rem 3.7rem;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--soft);font-size:14px}
+.bk .r:last-child{border-bottom:none}
+.bk .hd{color:var(--muted);font-size:12px;padding-top:0}
+.track{height:10px;background:var(--soft);border-radius:2px;overflow:hidden;display:flex}
+.fill{height:100%;background:var(--green)}
+.chip{font-size:12.5px;text-align:center;border-radius:3px;padding:1px 4px;background:var(--chipbg)}
+.chip.good{background:var(--goodbg);color:var(--goodfg)}.chip.bad{background:var(--badbg);color:var(--badfg)}
+.ins{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.ins li{padding:2px 12px 2px 0;border-inline-start:3px solid var(--line);padding-inline-start:12px;padding-inline-end:0;font-size:14.5px}
+.ins li.red{border-color:var(--red)}.ins li.amber{border-color:var(--amber)}.ins li.green{border-color:var(--green)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin:2px 0 8px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-inline-end:5px;vertical-align:-1px}
+svg text{font-family:inherit}
+.cols{display:flex;align-items:flex-end;gap:4px;height:170px;min-width:520px;padding-top:8px}
+.cols .c{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;min-width:0}
+.cols .b{width:70%;background:var(--blue);border-radius:2px 2px 0 0;min-height:1px}
+.cols .l{font-size:10.5px;color:var(--muted);margin-top:4px;direction:ltr}
+.cols .v{font-size:11px;color:var(--ink);direction:ltr}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:8px 10px;text-align:start;border-bottom:1px solid var(--soft);white-space:nowrap}
+th{font-weight:600;color:var(--muted);font-size:12.5px;background:var(--thbg);position:sticky;top:0}
+th[data-sort]{cursor:pointer}th[data-sort]:hover{color:var(--ink)}
+td.n,th.n{text-align:end}
+.st{display:inline-flex;align-items:center;gap:6px}
+.st i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.badge{font-size:12px;border-radius:3px;padding:1px 6px;background:var(--badbg);color:var(--badfg)}
+.search{border:1px solid var(--line);border-radius:4px;padding:7px 10px;min-width:240px;background:var(--panel)}
+.gantt{direction:ltr;position:relative;font-size:12.5px}
+.gantt .row{display:grid;grid-template-columns:150px 1fr;align-items:center;height:26px}
+.gantt .lab{padding-right:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--muted)}
+.gantt .tr{position:relative;height:100%;border-left:1px solid var(--line)}
+.gantt .bar2{position:absolute;top:6px;height:14px;border-radius:2px}
+.gantt .ref{position:absolute;top:0;bottom:0;border-left:2px dashed var(--red)}
+.gantt .axis{display:grid;grid-template-columns:150px 1fr;color:var(--muted);font-size:11.5px}
+.gantt .axis div.t{position:relative;height:18px}
+.gantt .axis span{position:absolute;transform:translateX(-50%)}
+.hc{display:grid;grid-template-columns:76px 1fr;gap:14px;padding:12px 0;border-bottom:1px solid var(--soft)}
+.hc:last-child{border-bottom:none}
+.sev{font-size:12.5px;font-weight:600;border-radius:3px;text-align:center;height:fit-content;padding:2px 4px}
+.sev.high{background:var(--badbg);color:var(--badfg)}.sev.med{background:var(--medbg);color:var(--medfg)}.sev.low{background:var(--lowbg);color:var(--lowfg)}.sev.pass{background:var(--goodbg);color:var(--goodfg)}
+.hc h4{margin:0;font-size:15px;font-weight:600}
+.hc p{margin:2px 0 0;color:var(--muted);font-size:13.5px}
+.hc code{direction:ltr;unicode-bidi:isolate;display:block;margin-top:6px;background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:6px 8px;font-size:12.5px;white-space:pre-wrap;font-family:Consolas,monospace;text-align:left}
+.score{display:flex;align-items:baseline;gap:10px}
+.score b{font-size:34px;font-weight:600}
+.note{font-size:12.5px;color:var(--muted)}
+footer{color:var(--muted);font-size:12.5px;border-top:1px solid var(--line);padding:14px 0 30px}
+footer ul{margin:6px 0 0;padding-inline-start:18px}
+#tip{position:fixed;z-index:50;background:var(--head);border:1px solid var(--line);color:#fff;border-radius:4px;padding:6px 9px;font-size:13px;pointer-events:none;display:none;max-width:260px;line-height:1.45}
+.empty{padding:40px;text-align:center;color:var(--muted)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:var(--panel)}
+.seg button{border:none;background:none;padding:5px 12px;cursor:pointer;font-size:13.5px}
+.seg button.on{background:var(--segon);color:var(--segfg)}
+.row-h{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="tip" role="tooltip"></div>
+<script>
+(function(){
+const D={"clients": [{"ClientID": "C001", "ClientName": "Client 1", "Sector": "Healthcare", "Region": "Dammam"}, {"ClientID": "C002", "ClientName": "Client 2", "Sector": "Healthcare", "Region": "Dammam"}, {"ClientID": "C003", "ClientName": "Client 3", "Sector": "Telecom", "Region": "Riyadh"}, {"ClientID": "C004", "ClientName": "Client 4", "Sector": "Telecom", "Region": "Jeddah"}, {"ClientID": "C005", "ClientName": "Client 5", "Sector": "Finance", "Region": "Riyadh"}, {"ClientID": "C006", "ClientName": "Client 6", "Sector": "Government", "Region": "Jeddah"}, {"ClientID": "C007", "ClientName": "Client 7", "Sector": "Government", "Region": "Jeddah"}, {"ClientID": "C008", "ClientName": "Client 8", "Sector": "Government", "Region": "Riyadh"}, {"ClientID": "C009", "ClientName": "Client 9", "Sector": "Finance", "Region": "Riyadh"}, {"ClientID": "C010", "ClientName": "Client 10", "Sector": "Finance", "Region": "Jeddah"}], "services": [{"ServiceID": "S01", "ServiceName": "IT Consulting"}, {"ServiceID": "S02", "ServiceName": "System Integration"}, {"ServiceID": "S03", "ServiceName": "Managed Services"}, {"ServiceID": "S04", "ServiceName": "Technical Support"}], "projects": [{"ProjectID": "P001", "ProjectName": "Project 1", "ClientID": "C002", "ServiceID": "S01", "StartDate": "2025-10-06", "EndDate": "2026-04-24", "Revenue": "905310", "Cost": "697088", "Status": "Active"}, {"ProjectID": "P002", "ProjectName": "Project 2", "ClientID": "C003", "ServiceID": "S01", "StartDate": "2025-03-28", "EndDate": "2025-11-08", "Revenue": "1110157", "Cost": "710500", "Status": "On Hold"}, {"ProjectID": "P003", "ProjectName": "Project 3", "ClientID": "C010", "ServiceID": "S02", "StartDate": "2025-11-25", "EndDate": "2026-01-17", "Revenue": "232369", "Cost": "176600", "Status": "On Hold"}, {"ProjectID": "P004", "ProjectName": "Project 4", "ClientID": "C005", "ServiceID": "S03", "StartDate": "2025-01-22", "EndDate": "2025-06-30", "Revenue": "883143", "Cost": "644694", "Status": "On Hold"}, {"ProjectID": "P005", "ProjectName": "Project 5", "ClientID": "C003", "ServiceID": "S04", "StartDate": "2026-02-26", "EndDate": "2026-06-21", "Revenue": "790795", "Cost": "450753", "Status": "Completed"}, {"ProjectID": "P006", "ProjectName": "Project 6", "ClientID": "C008", "ServiceID": "S03", "StartDate": "2025-08-14", "EndDate": "2026-01-25", "Revenue": "411593", "Cost": "329274", "Status": "Completed"}, {"ProjectID": "P007", "ProjectName": "Project 7", "ClientID": "C010", "ServiceID": "S02", "StartDate": "2025-08-11", "EndDate": "2026-03-26", "Revenue": "1283732", "Cost": "1065497", "Status": "Completed"}, {"ProjectID": "P008", "ProjectName": "Project 8", "ClientID": "C010", "ServiceID": "S04", "StartDate": "2025-05-22", "EndDate": "2025-06-24", "Revenue": "830522", "Cost": "498313", "Status": "Completed"}, {"ProjectID": "P009", "ProjectName": "Project 9", "ClientID": "C003", "ServiceID": "S04", "StartDate": "2025-07-18", "EndDate": "2025-11-25", "Revenue": "868133", "Cost": "703187", "Status": "Completed"}, {"ProjectID": "P010", "ProjectName": "Project 10", "ClientID": "C002", "ServiceID": "S02", "StartDate": "2025-01-20", "EndDate": "2025-08-19", "Revenue": "1296871", "Cost": "842966", "Status": "Completed"}, {"ProjectID": "P011", "ProjectName": "Project 11", "ClientID": "C003", "ServiceID": "S01", "StartDate": "2025-02-08", "EndDate": "2025-05-27", "Revenue": "939902", "Cost": "526345", "Status": "Active"}, {"ProjectID": "P012", "ProjectName": "Project 12", "ClientID": "C004", "ServiceID": "S02", "StartDate": "2025-12-19", "EndDate": "2026-07-26", "Revenue": "1467453", "Cost": "1100589", "Status": "On Hold"}, {"ProjectID": "P013", "ProjectName": "Project 13", "ClientID": "C002", "ServiceID": "S04", "StartDate": "2025-07-20", "EndDate": "2025-10-08", "Revenue": "737334", "Cost": "530880", "Status": "Completed"}, {"ProjectID": "P014", "ProjectName": "Project 14", "ClientID": "C007", "ServiceID": "S02", "StartDate": "2025-10-24", "EndDate": "2026-04-27", "Revenue": "1455023", "Cost": "1149468", "Status": "Completed"}, {"ProjectID": "P015", "ProjectName": "Project 15", "ClientID": "C009", "ServiceID": "S04", "StartDate": "2025-04-08", "EndDate": "2025-07-17", "Revenue": "843140", "Cost": "463727", "Status": "On Hold"}, {"ProjectID": "P016", "ProjectName": "Project 16", "ClientID": "C001", "ServiceID": "S04", "StartDate": "2025-11-14", "EndDate": "2026-01-05", "Revenue": "367649", "Cost": "286766", "Status": "Completed"}, {"ProjectID": "P017", "ProjectName": "Project 17", "ClientID": "C007", "ServiceID": "S04", "StartDate": "2025-04-29", "EndDate": "2025-12-08", "Revenue": "1060873", "Cost": "880524", "Status": "On Hold"}, {"ProjectID": "P018", "ProjectName": "Project 18", "ClientID": "C009", "ServiceID": "S04", "StartDate": "2025-12-08", "EndDate": "2026-03-12", "Revenue": "1446778", "Cost": "1012744", "Status": "Active"}, {"ProjectID": "P019", "ProjectName": "Project 19", "ClientID": "C001", "ServiceID": "S03", "StartDate": "2025-06-17", "EndDate": "2025-10-08", "Revenue": "1003741", "Cost": "853179", "Status": "Active"}, {"ProjectID": "P020", "ProjectName": "Project 20", "ClientID": "C010", "ServiceID": "S04", "StartDate": "2025-11-27", "EndDate": "2026-01-16", "Revenue": "593655", "Cost": "480860", "Status": "Completed"}], "tickets": [{"TicketID": "T001", "ProjectID": "P004", "CreatedDate": "2026-01-02", "ClosedDate": "NULL", "Priority": "Medium", "Status": "Open", "ResolutionHours": "NULL"}, {"TicketID": "T002", "ProjectID": "P009", "CreatedDate": "2025-10-30", "ClosedDate": "2025-11-02", "Priority": "Medium", "Status": "Closed", "ResolutionHours": "4"}, {"TicketID": "T003", "ProjectID": "P008", "CreatedDate": "2025-02-22", "ClosedDate": "NULL", "Priority": "Low", "Status": "Open", "ResolutionHours": "NULL"}, {"TicketID": "T004", "ProjectID": "P003", "CreatedDate": "2025-01-17", "ClosedDate": "NULL", "Priority": "High", "Status": "Open", "ResolutionHours": "NULL"}, {"TicketID": "T005", "ProjectID": "P007", "CreatedDate": "2026-04-09", "ClosedDate": "2026-04-13", "Priority": "Low", "Status": "Closed", "ResolutionHours": "17"}, {"TicketID": "T006", "ProjectID": "P019", "CreatedDate": "2025-06-21", "ClosedDate": "NULL", "Priority": "High", "Status": "Open", "ResolutionHours": "NULL"}, {"TicketID": "T007", "ProjectID": "P002", "CreatedDate": "2025-09-30", "ClosedDate": "NULL", "Priority": "Low", "Status": "Open", "ResolutionHours": "NULL"}, {"TicketID": "T008", "ProjectID": "P002", "CreatedDate": "2025-04-30", "ClosedDate": "NULL", "Priority": "Medium", "Status": "Open", "ResolutionHours": "NULL"}, {"TicketID": "T009", "ProjectID": "P010", "CreatedDate": "2026-01-05", "ClosedDate": "NULL", "Priority": "Medium", "Status": "Open", "ResolutionHours": "NULL"}, {"TicketID": "T010", "ProjectID": "P004", "CreatedDate": "2025-06-28", "ClosedDate": "2025-06-29", "Priority": "Medium", "Status": "Closed", "ResolutionHours": "15"}, {"TicketID": "T011", "ProjectID": "P017", "CreatedDate": "2025-06-12", "ClosedDate": "NULL", "Priority": "Medium", "Status": "Open", "ResolutionHours": "NULL"}, {"TicketID": "T012", "ProjectID": "P015", "CreatedDate": "2026-04-18", "ClosedDate": "2026-04-21", "Priority": "Low", "Status": "Closed", "ResolutionHours": "5"}, {"TicketID": "T013", "ProjectID": "P013", "CreatedDate": "2025-06-17", "ClosedDate": "NULL", "Priority": "Medium", "Status": "Open", "ResolutionHours": "NULL"}, {"TicketID": "T014", "ProjectID": "P002", "CreatedDate": "2026-02-15", "ClosedDate": "2026-02-15", "Priority": "Low", "Status": "Closed", "ResolutionHours": "21"}, {"TicketID": "T015", "ProjectID": "P008", "CreatedDate": "2025-08-11", "ClosedDate": "2025-08-14", "Priority": "Low", "Status": "Closed", "ResolutionHours": "1"}, {"TicketID": "T016", "ProjectID": "P016", "CreatedDate": "2026-01-15", "ClosedDate": "2026-01-20", "Priority": "Medium", "Status": "Closed", "ResolutionHours": "8"}, {"TicketID": "T017", "ProjectID": "P014", "CreatedDate": "2025-02-13", "ClosedDate": "NULL", "Priority": "Low", "Status": "Open", "ResolutionHours": "NULL"}, {"TicketID": "T018", "ProjectID": "P017", "CreatedDate": "2025-06-29", "ClosedDate": "NULL", "Priority": "High", "Status": "Open", "ResolutionHours": "NULL"}, {"TicketID": "T019", "ProjectID": "P003", "CreatedDate": "2026-02-08", "ClosedDate": "2026-02-09", "Priority": "Medium", "Status": "Closed", "ResolutionHours": "19"}, {"TicketID": "T020", "ProjectID": "P005", "CreatedDate": "2025-01-07", "ClosedDate": "NULL", "Priority": "Medium", "Status": "Open", "ResolutionHours": "NULL"}, {"TicketID": "T021", "ProjectID": "P016", "CreatedDate": "2025-07-30", "ClosedDate": "NULL", "Priority": "Low", "Status": "Open", "ResolutionHours": "NULL"}, {"TicketID": "T022", "ProjectID": "P005", "CreatedDate": "2026-04-19", "ClosedDate": "NULL", "Priority": "Medium", "Status": "Open", "ResolutionHours": "NULL"}, {"TicketID": "T023", "ProjectID": "P016", "CreatedDate": "2025-10-12", "ClosedDate": "2025-10-14", "Priority": "Medium", "Status": "Closed", "ResolutionHours": "8"}, {"TicketID": "T024", "ProjectID": "P013", "CreatedDate": "2025-04-07", "ClosedDate": "2025-04-07", "Priority": "Low", "Status": "Closed", "ResolutionHours": "17"}, {"TicketID": "T025", "ProjectID": "P006", "CreatedDate": "2026-02-05", "ClosedDate": "2026-02-05", "Priority": "Low", "Status": "Closed", "ResolutionHours": "3"}, {"TicketID": "T026", "ProjectID": "P005", "CreatedDate": "2026-01-09", "ClosedDate": "NULL", "Priority": "High", "Status": "Open", "ResolutionHours": "NULL"}, {"TicketID": "T027", "ProjectID": "P009", "CreatedDate": "2025-10-30", "ClosedDate": "NULL", "Priority": "Low", "Status": "Open", "ResolutionHours": "NULL"}, {"TicketID": "T028", "ProjectID": "P015", "CreatedDate": "2025-05-06", "ClosedDate": "2025-05-09", "Priority": "Medium", "Status": "Closed", "ResolutionHours": "5"}, {"TicketID": "T029", "ProjectID": "P004", "CreatedDate": "2026-01-20", "ClosedDate": "2026-01-23", "Priority": "Medium", "Status": "Closed", "ResolutionHours": "10"}, {"TicketID": "T030", "ProjectID": "P011", "CreatedDate": "2025-01-03", "ClosedDate": "2025-01-06", "Priority": "Low", "Status": "Closed", "ResolutionHours": "22"}, {"TicketID": "T031", "ProjectID": "P015", "CreatedDate": "2025-05-18", "ClosedDate": "2025-05-21", "Priority": "Medium", "Status": "Closed", "ResolutionHours": "17"}, {"TicketID": "T032", "ProjectID": "P007", "CreatedDate": "2025-05-11", "ClosedDate": "2025-05-12", "Priority": "Medium", "Status": "Closed", "ResolutionHours": "17"}, {"TicketID": "T033", "ProjectID": "P009", "CreatedDate": "2025-02-23", "ClosedDate": "2025-02-24", "Priority": "High", "Status": "Closed", "ResolutionHours": "11"}, {"TicketID": "T034", "ProjectID": "P020", "CreatedDate": "2025-04-10", "ClosedDate": "NULL", "Priority": "Medium", "Status": "Open", "ResolutionHours": "NULL"}, {"TicketID": "T035", "ProjectID": "P008", "CreatedDate": "2026-03-06", "ClosedDate": "NULL", "Priority": "Medium", "Status": "Open", "ResolutionHours": "NULL"}, {"TicketID": "T036", "ProjectID": "P019", "CreatedDate": "2025-09-20", "ClosedDate": "NULL", "Priority": "Medium", "Status": "Open", "ResolutionHours": "NULL"}, {"TicketID": "T037", "ProjectID": "P011", "CreatedDate": "2025-02-13", "ClosedDate": "NULL", "Priority": "Low", "Status": "Open", "ResolutionHours": "NULL"}, {"TicketID": "T038", "ProjectID": "P017", "CreatedDate": "2025-02-11", "ClosedDate": "2025-02-14", "Priority": "High", "Status": "Closed", "ResolutionHours": "18"}, {"TicketID": "T039", "ProjectID": "P011", "CreatedDate": "2026-03-01", "ClosedDate": "NULL", "Priority": "Medium", "Status": "Open", "ResolutionHours": "NULL"}, {"TicketID": "T040", "ProjectID": "P006", "CreatedDate": "2026-01-20", "ClosedDate": "NULL", "Priority": "High", "Status": "Open", "ResolutionHours": "NULL"}, {"TicketID": "T041", "ProjectID": "P003", "CreatedDate": "2025-12-17", "ClosedDate": "NULL", "Priority": "Medium", "Status": "Open", "ResolutionHours": "NULL"}, {"TicketID": "T042", "ProjectID": "P016", "CreatedDate": "2025-10-06", "ClosedDate": "2025-10-09", "Priority": "Medium", "Status": "Closed", "ResolutionHours": "5"}, {"TicketID": "T043", "ProjectID": "P014", "CreatedDate": "2025-07-12", "ClosedDate": "NULL", "Priority": "Medium", "Status": "Open", "ResolutionHours": "NULL"}, {"TicketID": "T044", "ProjectID": "P014", "CreatedDate": "2025-11-18", "ClosedDate": "2025-11-19", "Priority": "Medium", "Status": "Closed", "ResolutionHours": "7"}, {"TicketID": "T045", "ProjectID": "P020", "CreatedDate": "2026-05-05", "ClosedDate": "NULL", "Priority": "High", "Status": "Open", "ResolutionHours": "NULL"}, {"TicketID": "T046", "ProjectID": "P015", "CreatedDate": "2025-08-24", "ClosedDate": "NULL", "Priority": "High", "Status": "Open", "ResolutionHours": "NULL"}, {"TicketID": "T047", "ProjectID": "P009", "CreatedDate": "2025-01-05", "ClosedDate": "2025-01-07", "Priority": "High", "Status": "Closed", "ResolutionHours": "14"}, {"TicketID": "T048", "ProjectID": "P017", "CreatedDate": "2026-03-20", "ClosedDate": "2026-03-24", "Priority": "Medium", "Status": "Closed", "ResolutionHours": "10"}, {"TicketID": "T049", "ProjectID": "P003", "CreatedDate": "2025-03-28", "ClosedDate": "NULL", "Priority": "Medium", "Status": "Open", "ResolutionHours": "NULL"}, {"TicketID": "T050", "ProjectID": "P017", "CreatedDate": "2026-01-21", "ClosedDate": "2026-01-25", "Priority": "Low", "Status": "Closed", "ResolutionHours": "7"}], "assets": [{"AssetID": "A001", "ClientID": "C005", "AssetType": "Network", "AssetValue": "144430", "Status": "Active"}, {"AssetID": "A002", "ClientID": "C001", "AssetType": "Laptop", "AssetValue": "82025", "Status": "Active"}, {"AssetID": "A003", "ClientID": "C003", "AssetType": "Network", "AssetValue": "88934", "Status": "Retired"}, {"AssetID": "A004", "ClientID": "C008", "AssetType": "Network", "AssetValue": "32646", "Status": "Active"}, {"AssetID": "A005", "ClientID": "C006", "AssetType": "Laptop", "AssetValue": "32753", "Status": "Active"}, {"AssetID": "A006", "ClientID": "C006", "AssetType": "Server", "AssetValue": "52460", "Status": "Active"}, {"AssetID": "A007", "ClientID": "C002", "AssetType": "Network", "AssetValue": "23383", "Status": "Retired"}, {"AssetID": "A008", "ClientID": "C009", "AssetType": "Network", "AssetValue": "57648", "Status": "Retired"}, {"AssetID": "A009", "ClientID": "C010", "AssetType": "Network", "AssetValue": "76738", "Status": "Retired"}, {"AssetID": "A010", "ClientID": "C001", "AssetType": "Network", "AssetValue": "24958", "Status": "Retired"}, {"AssetID": "A011", "ClientID": "C003", "AssetType": "Storage", "AssetValue": "20982", "Status": "Active"}, {"AssetID": "A012", "ClientID": "C004", "AssetType": "Network", "AssetValue": "45061", "Status": "Retired"}, {"AssetID": "A013", "ClientID": "C004", "AssetType": "Server", "AssetValue": "29016", "Status": "Retired"}, {"AssetID": "A014", "ClientID": "C007", "AssetType": "Laptop", "AssetValue": "66931", "Status": "Retired"}, {"AssetID": "A015", "ClientID": "C008", "AssetType": "Laptop", "AssetValue": "108325", "Status": "Retired"}, {"AssetID": "A016", "ClientID": "C010", "AssetType": "Server", "AssetValue": "56674", "Status": "Retired"}, {"AssetID": "A017", "ClientID": "C002", "AssetType": "Network", "AssetValue": "67381", "Status": "Active"}, {"AssetID": "A018", "ClientID": "C007", "AssetType": "Storage", "AssetValue": "95156", "Status": "Retired"}, {"AssetID": "A019", "ClientID": "C004", "AssetType": "Laptop", "AssetValue": "77972", "Status": "Active"}, {"AssetID": "A020", "ClientID": "C002", "AssetType": "Server", "AssetValue": "22427", "Status": "Retired"}, {"AssetID": "A021", "ClientID": "C003", "AssetType": "Server", "AssetValue": "34431", "Status": "Active"}, {"AssetID": "A022", "ClientID": "C007", "AssetType": "Storage", "AssetValue": "33611", "Status": "Retired"}, {"AssetID": "A023", "ClientID": "C009", "AssetType": "Storage", "AssetValue": "25551", "Status": "Active"}, {"AssetID": "A024", "ClientID": "C009", "AssetType": "Laptop", "AssetValue": "129158", "Status": "Active"}, {"AssetID": "A025", "ClientID": "C007", "AssetType": "Server", "AssetValue": "35634", "Status": "Active"}, {"AssetID": "A026", "ClientID": "C004", "AssetType": "Laptop", "AssetValue": "118989", "Status": "Active"}, {"AssetID": "A027", "ClientID": "C005", "AssetType": "Storage", "AssetValue": "64576", "Status": "Active"}, {"AssetID": "A028", "ClientID": "C004", "AssetType": "Network", "AssetValue": "37623", "Status": "Retired"}, {"AssetID": "A029", "ClientID": "C003", "AssetType": "Laptop", "AssetValue": "123702", "Status": "Retired"}, {"AssetID": "A030", "ClientID": "C007", "AssetType": "Server", "AssetValue": "86519", "Status": "Retired"}, {"AssetID": "A031", "ClientID": "C009", "AssetType": "Server", "AssetValue": "14928", "Status": "Retired"}, {"AssetID": "A032", "ClientID": "C004", "AssetType": "Network", "AssetValue": "72135", "Status": "Retired"}, {"AssetID": "A033", "ClientID": "C009", "AssetType": "Laptop", "AssetValue": "41208", "Status": "Retired"}, {"AssetID": "A034", "ClientID": "C004", "AssetType": "Server", "AssetValue": "75371", "Status": "Active"}, {"AssetID": "A035", "ClientID": "C008", "AssetType": "Storage", "AssetValue": "59696", "Status": "Retired"}, {"AssetID": "A036", "ClientID": "C006", "AssetType": "Laptop", "AssetValue": "105445", "Status": "Retired"}, {"AssetID": "A037", "ClientID": "C005", "AssetType": "Network", "AssetValue": "149958", "Status": "Active"}, {"AssetID": "A038", "ClientID": "C005", "AssetType": "Storage", "AssetValue": "27494", "Status": "Retired"}, {"AssetID": "A039", "ClientID": "C002", "AssetType": "Storage", "AssetValue": "138576", "Status": "Active"}, {"AssetID": "A040", "ClientID": "C009", "AssetType": "Storage", "AssetValue": "84768", "Status": "Retired"}]};
+const REF=new Date('2026-11-01T00:00:00');
+let _th='light';try{_th=localStorage.getItem('mis-theme')||(typeof matchMedia==='function'&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}catch(e){}
+const S={theme:_th,lang:'ar',tab:'exec',region:'all',sector:'all',service:'all',status:'all',basis:'end',sla:8,q:'',sort:'ProjectID',dir:1};
+const L=(a,e)=>S.lang==='ar'?a:e;
+const NAMES={
+ region:{Riyadh:['الرياض','Riyadh'],Jeddah:['جدة','Jeddah'],Dammam:['الدمام','Dammam']},
+ sector:{Healthcare:['الرعاية الصحية','Healthcare'],Telecom:['الاتصالات','Telecom'],Finance:['المالية','Finance'],Government:['الحكومي','Government']},
+ service:{'IT Consulting':['الاستشارات التقنية','IT Consulting'],'System Integration':['تكامل الأنظمة','System Integration'],'Managed Services':['الخدمات المُدارة','Managed Services'],'Technical Support':['الدعم الفني','Technical Support']},
+ status:{Active:['نشط','Active'],'On Hold':['معلّق','On Hold'],Completed:['مكتمل','Completed']},
+ prio:{High:['عالية','High'],Medium:['متوسطة','Medium'],Low:['منخفضة','Low']},
+ tstat:{Open:['مفتوحة','Open'],Closed:['مغلقة','Closed']},
+ atype:{Laptop:['حاسبات محمولة','Laptops'],Network:['معدات شبكات','Network'],Server:['خوادم','Servers'],Storage:['تخزين','Storage']},
+ astat:{Active:['قيد الخدمة','In service'],Retired:['خارج الخدمة','Retired']}
+};
+const nm=(g,k)=>{const v=NAMES[g]&&NAMES[g][k];return v?(S.lang==='ar'?v[0]:v[1]):k};
+const cn=n=>S.lang==='ar'?n.replace('Client ','العميل '):n;
+const SC={Completed:'var(--green)',Active:'var(--blue)','On Hold':'var(--amber)'};
+const M=v=>(v/1e6).toFixed(2)+(S.lang==='ar'?' م':'M');
+const pct=v=>(v*100).toFixed(1)+'%';
+const N=v=>Math.round(v).toLocaleString('en');
+const sum=(a,f)=>a.reduce((s,x)=>s+f(x),0);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const tip=s=>`data-tip="${esc(s)}"`;
+const dstr=d=>d.toISOString().slice(0,10);
+
+// ---------- data prep ----------
+const cl=Object.fromEntries(D.clients.map(c=>[c.ClientID,c]));
+const sv=Object.fromEntries(D.services.map(s=>[s.ServiceID,s]));
+D.projects.forEach(p=>{p.Revenue=+p.Revenue;p.Cost=+p.Cost;p.profit=p.Revenue-p.Cost;p.margin=p.profit/p.Revenue;
+ const c=cl[p.ClientID];p.region=c.Region;p.sector=c.Sector;p.service=sv[p.ServiceID].ServiceName;
+ p.sd=new Date(p.StartDate+'T00:00:00');p.ed=new Date(p.EndDate+'T00:00:00');
+ p.overdue=p.Status!=='Completed'&&p.ed<REF;p.late=p.overdue?Math.round((REF-p.ed)/864e5):0;});
+const pj=Object.fromEntries(D.projects.map(p=>[p.ProjectID,p]));
+D.tickets.forEach(t=>{const p=pj[t.ProjectID];t.ClientID=p.ClientID;if(t.ClosedDate==='NULL')t.ClosedDate='';
+ t.hours=(t.ResolutionHours===''||t.ResolutionHours==='NULL')?null:+t.ResolutionHours;t.cd=new Date(t.CreatedDate+'T00:00:00');const c=cl[t.ClientID];
+ t.region=c.Region;t.sector=c.Sector;t.service=p.service;t.pstatus=p.Status;});
+D.assets.forEach(a=>{a.value=+a.AssetValue;const c=cl[a.ClientID];a.region=c.Region;a.sector=c.Sector;});
+
+const okv=(k,v)=>S[k]==='all'||S[k]===v;
+const getP=()=>D.projects.filter(p=>okv('region',p.region)&&okv('sector',p.sector)&&okv('service',p.service)&&okv('status',p.Status));
+const getT=()=>D.tickets.filter(t=>okv('region',t.region)&&okv('sector',t.sector)&&okv('service',t.service)&&okv('status',t.pstatus));
+const getA=()=>D.assets.filter(a=>okv('region',a.region)&&okv('sector',a.sector));
+
+function agg(P,keyFn){const m=new Map();P.forEach(p=>{const k=keyFn(p);const o=m.get(k)||{k,n:0,rev:0,prof:0};o.n++;o.rev+=p.Revenue;o.prof+=p.profit;m.set(k,o)});
+ return [...m.values()].map(o=>({...o,mg:o.prof/o.rev})).sort((a,b)=>b.rev-a.rev)}
+
+// ---------- chart helpers ----------
+function kpi(label,val,sub,tone){return `<div class="kpi"><div class="kl">${label}</div><div class="kv num ${tone?'t-'+tone:''}">${val}</div><div class="ks">${sub||''}</div></div>`}
+function breakdown(P,keyFn,labelFn,limit){
+ const rev=sum(P,p=>p.Revenue),avg=rev?sum(P,p=>p.profit)/rev:0;
+ let a=agg(P,keyFn);if(limit)a=a.slice(0,limit);const mx=Math.max(...a.map(o=>o.rev),1);
+ return `<div class="bk"><div class="r hd"><span></span><span></span><span class="num">${L('الإيراد','Revenue')}</span><span>${L('الهامش','Margin')}</span></div>`+a.map(o=>{
+  const cls=o.mg>avg+.02?'good':o.mg<avg-.02?'bad':'';
+  return `<div class="r"><span>${labelFn(o.k)} <span class="note num">(${o.n})</span></span><div class="track" ${tip(labelFn(o.k)+' — '+M(o.rev)+' | '+L('ربح ','profit ')+M(o.prof))}><div class="fill" style="width:${o.rev/mx*100}%"></div></div><span class="num">${M(o.rev)}</span><span class="chip num ${cls}">${pct(o.mg)}</span></div>`}).join('')+`</div>`}
+function stack(rows,segs){ // rows [{label,vals:{key:n}}]
+ const mx=Math.max(...rows.map(r=>sum(segs,s=>r.vals[s.key]||0)),1);
+ return `<div class="legend">${segs.map(s=>`<span><i style="background:${s.color}"></i>${s.label}</span>`).join('')}</div><div class="bk">`+rows.map(r=>{
+  const tot=sum(segs,s=>r.vals[s.key]||0);
+  return `<div class="r" style="grid-template-columns:8.6rem 1fr 4.6rem"><span>${r.label}</span><div class="track" style="height:14px">${segs.map(s=>{const v=r.vals[s.key]||0;return v?`<div style="width:${v/mx*100}%;background:${s.color}" ${tip(r.label+' — '+s.label+': '+(r.fmt?r.fmt(v):N(v)))}></div>`:''}).join('')}</div><span class="num">${r.fmt?r.fmt(tot):N(tot)}</span></div>`}).join('')+`</div>`}
+function donut(items,center){
+ const tot=sum(items,i=>i.v)||1;let off=0;const R=52,C=2*Math.PI*R;
+ const arcs=items.map(i=>{const len=i.v/tot*C;const s=`<circle r="${R}" cx="70" cy="70" fill="none" stroke="${i.c}" stroke-width="20" stroke-dasharray="${len} ${C-len}" stroke-dashoffset="${-off}" transform="rotate(-90 70 70)" ${tip(i.label+': '+(i.fmt?i.fmt(i.v):N(i.v))+' ('+pct(i.v/tot)+')')}/>`;off+=len;return s}).join('');
+ return `<div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap"><svg viewBox="0 0 140 140" width="150" height="150" style="direction:ltr">${arcs}<text x="70" y="68" text-anchor="middle" font-size="20" font-weight="600" fill="var(--ink)">${center[0]}</text><text x="70" y="86" text-anchor="middle" font-size="10" fill="var(--muted)">${center[1]}</text></svg><div class="legend" style="flex-direction:column;gap:6px;margin:0">${items.map(i=>`<span><i style="background:${i.c}"></i>${i.label}: <b class="num">${i.fmt?i.fmt(i.v):N(i.v)}</b> <span class="num">(${pct(i.v/tot)})</span></span>`).join('')}</div></div>`}
+function cols(items,color){const mx=Math.max(...items.map(i=>i.v),1);
+ return `<div class="scroll"><div class="cols">${items.map(i=>`<div class="c" ${tip(i.tip||i.label+': '+i.v)}><span class="v">${i.v||''}</span><div class="b" style="height:${i.v/mx*78}%;${color?'background:'+color:''}"></div><span class="l">${i.label}</span></div>`).join('')}</div></div>`}
+function monthsRange(a,b){const out=[];let y=a.getFullYear(),m=a.getMonth();const ey=b.getFullYear(),em=b.getMonth();while(y<ey||(y===ey&&m<=em)){out.push([y,m]);m++;if(m>11){m=0;y++}}return out}
+const mk=(y,m)=>y*100+m+1;
+const ml=(y,m)=>String(m+1).padStart(2,'0')+'/'+String(y).slice(2);
+
+function combo(series){
+ const W=900,H=290,l=46,r=56,t=14,b=34,n=series.length,bw=(W-l-r)/n,mx=Math.max(...series.map(s=>s.v),1)*1.12,tot=series[n-1].c||1;
+ let g='';for(let i=0;i<=4;i++){const y=t+(H-t-b)*i/4;g+=`<line x1="${l}" x2="${W-r}" y1="${y}" y2="${y}" stroke="var(--line)"/><text x="${l-6}" y="${y+4}" text-anchor="end" font-size="11" fill="var(--muted)">${((mx*(4-i)/4)/1e6).toFixed(1)}</text><text x="${W-r+6}" y="${y+4}" font-size="11" fill="var(--amber)">${((tot*(4-i)/4)/1e6).toFixed(0)}</text>`}
+ let bars='',pts=[],lab='';
+ series.forEach((s,i)=>{const x=l+i*bw,h=s.v/mx*(H-t-b),y=H-b-h;
+  bars+=`<rect x="${x+bw*.2}" y="${y}" width="${bw*.6}" height="${Math.max(h,0)}" fill="var(--blue)" rx="2"/>`;
+  pts.push([x+bw/2,H-b-s.c/tot*(H-t-b)]);
+  lab+=`<text x="${x+bw/2}" y="${H-b+16}" text-anchor="middle" font-size="10.5" fill="var(--muted)">${s.label}</text>`;
+  bars+=`<rect x="${x}" y="${t}" width="${bw}" height="${H-t-b}" fill="transparent" ${tip(s.label+' — '+L('إيراد الشهر: ','Month: ')+M(s.v)+' | '+L('تراكمي: ','Cumulative: ')+M(s.c)+' | '+s.n+L(' مشروع',' projects'))}/>`});
+ return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="direction:ltr">${g}${bars}<polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="var(--amber)" stroke-width="2.5"/>${pts.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="3" fill="var(--amber)"/>`).join('')}${lab}</svg>`}
+
+function scatter(P){
+ const W=640,H=310,l=48,r=16,t=14,b=40,xmx=1.6e6,ymn=.1,ymx=.5;
+ const X=v=>l+v/xmx*(W-l-r),Y=v=>t+(1-(v-ymn)/(ymx-ymn))*(H-t-b);
+ let g='';for(let i=0;i<=4;i++){const v=ymn+(ymx-ymn)*i/4,y=Y(v);g+=`<line x1="${l}" x2="${W-r}" y1="${y}" y2="${y}" stroke="var(--line)"/><text x="${l-6}" y="${y+4}" text-anchor="end" font-size="11" fill="var(--muted)">${Math.round(v*100)}%</text>`}
+ for(let v=0;v<=1.6e6;v+=4e5){g+=`<text x="${X(v)}" y="${H-b+16}" text-anchor="middle" font-size="11" fill="var(--muted)">${(v/1e6).toFixed(1)}</text>`}
+ const all=sum(P,p=>p.profit)/(sum(P,p=>p.Revenue)||1),ay=Y(all);
+ const dots=P.map(p=>`<circle cx="${X(p.Revenue)}" cy="${Y(p.margin)}" r="8" fill="${SC[p.Status]}" fill-opacity=".88" stroke="${p.overdue?'var(--red)':'var(--panel)'}" stroke-width="${p.overdue?2.5:1.5}" style="cursor:pointer" data-dot="${p.ProjectID}" ${tip(p.ProjectID+' · '+cn(cl[p.ClientID].ClientName)+' · '+nm('service',p.service)+'\n'+L('إيراد ','Revenue ')+M(p.Revenue)+' · '+L('هامش ','Margin ')+pct(p.margin)+' · '+nm('status',p.Status)+(p.overdue?' · '+L('متأخر '+p.late+' يوم',p.late+' days overdue'):''))}/>`).join('');
+ return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="direction:ltr">${g}<line x1="${l}" x2="${W-r}" y1="${ay}" y2="${ay}" stroke="var(--ink)" stroke-dasharray="5 4"/><text x="${W-r}" y="${ay-5}" text-anchor="end" font-size="11" fill="var(--ink)">${L('متوسط المحفظة ','Portfolio avg ')}${pct(all)}</text>${dots}<text x="${(l+W-r)/2}" y="${H-4}" text-anchor="middle" font-size="12" fill="var(--muted)">${L('إيراد المشروع (مليون)','Project revenue (M)')}</text><text x="12" y="${t+4}" font-size="12" fill="var(--muted)">${L('الهامش','Margin')}</text></svg>`}
+
+// ---------- views ----------
+const empty=()=>`<div class="panel empty">${L('لا توجد بيانات تطابق الفلاتر الحالية.','No data matches the current filters.')} <button class="langbtn" style="color:var(--green);border-color:var(--green)" data-reset>${L('إعادة ضبط الفلاتر','Reset filters')}</button></div>`;
+
+function execView(){
+ const P=getP();if(!P.length)return empty();
+ const rev=sum(P,p=>p.Revenue),cost=sum(P,p=>p.Cost),prof=rev-cost,mg=prof/rev;
+ const hold=P.filter(p=>p.Status==='On Hold'),hr=sum(hold,p=>p.Revenue);
+ const open=P.filter(p=>p.Status!=='Completed'),od=P.filter(p=>p.overdue);const comp=sum(P.filter(p=>p.Status==='Completed'),p=>p.Revenue);
+ const byC=agg(P,p=>p.ClientID),top3=sum(byC.slice(0,3),o=>o.rev)/rev;
+ const mgs=P.map(p=>p.margin);
+ const cnt=s=>P.filter(p=>p.Status===s).length;
+ const bySv=agg(P,p=>p.service),byRg=agg(P,p=>p.region),bySc=agg(P,p=>p.sector);
+ const ins=[];
+ if(bySv.length>1){const tr=bySv[0],tm=[...bySv].sort((a,b)=>b.mg-a.mg)[0],lm=[...bySv].sort((a,b)=>a.mg-b.mg)[0];
+  ins.push([tr.k!==tm.k?'amber':'green',tr.k!==tm.k?L(`${nm('service',tr.k)} الأعلى إيراداً (${M(tr.rev)}) لكن ${nm('service',tm.k)} الأعلى هامشاً (${pct(tm.mg)}). الإيراد الأكبر ليس هو الربح الأكبر.`,`${nm('service',tr.k)} leads revenue (${M(tr.rev)}) but ${nm('service',tm.k)} leads margin (${pct(tm.mg)}). Biggest revenue is not biggest profit.`):L(`${nm('service',tr.k)} يتصدر الإيراد والهامش معاً.`,`${nm('service',tr.k)} leads on both revenue and margin.`)]);
+  if(lm.k!==tm.k)ins.push(['red',L(`${nm('service',lm.k)} الأدنى هامشاً (${pct(lm.mg)}) — راجع التسعير وهيكل التكلفة.`,`${nm('service',lm.k)} has the lowest margin (${pct(lm.mg)}) — review pricing and cost structure.`)])}
+ if(byRg.length>1)ins.push(['green',L(`${nm('region',byRg[0].k)} الأعلى إيراداً (${M(byRg[0].rev)}) بهامش ${pct(byRg[0].mg)}.`,`${nm('region',byRg[0].k)} leads revenue (${M(byRg[0].rev)}) at ${pct(byRg[0].mg)} margin.`)]);
+ if(bySc.length>1){const w=[...bySc].sort((a,b)=>a.mg-b.mg)[0];ins.push(['red',L(`قطاع ${nm('sector',w.k)} الأضعف ربحية (${pct(w.mg)}).`,`${nm('sector',w.k)} is the weakest sector (${pct(w.mg)} margin).`)])}
+ if(hold.length)ins.push(['amber',L(`${hold.length} مشاريع معلّقة تمثل ${pct(hr/rev)} من الإيراد (${M(hr)}) — قيمة عقود لم تتحقق بعد.`,`${hold.length} on-hold projects hold ${pct(hr/rev)} of revenue (${M(hr)}) — contract value not yet realised.`)]);
+ if(od.length)ins.push(['red',L(`${od.length} من ${open.length} مشاريع غير مكتملة تجاوزت تاريخ انتهائها المخطط (أقدمها ${Math.max(...od.map(p=>p.late))} يوماً).`,`${od.length} of ${open.length} unfinished projects are past planned end date (oldest ${Math.max(...od.map(p=>p.late))} days).`)]);
+ if(byC.length>3)ins.push([top3>.5?'amber':'green',L(`أكبر 3 عملاء = ${pct(top3)} من الإيراد.`,`Top 3 clients = ${pct(top3)} of revenue.`)]);
+ return `<div class="kpis">
+  ${kpi(L('إجمالي قيمة العقود','Total contract value'),M(rev),L(`${P.length} مشروعاً`,`${P.length} projects`))}
+  ${kpi(L('إيراد محقق (مكتمل)','Realised (completed)'),M(comp),L(`${pct(comp/rev)} من قيمة العقود`,`${pct(comp/rev)} of contract value`),'green')}
+  ${kpi(L('الربح','Profit'),M(prof),L('التكلفة ','Cost ')+M(cost))}
+  ${kpi(L('هامش الربح','Profit margin'),pct(mg),L(`بين ${pct(Math.min(...mgs))} و${pct(Math.max(...mgs))} للمشروع`,`${pct(Math.min(...mgs))} – ${pct(Math.max(...mgs))} per project`))}
+  ${kpi(L('إيراد معلّق','On-hold revenue'),M(hr),L(`${pct(hr/rev)} من الإيراد · ${hold.length} مشاريع`,`${pct(hr/rev)} of revenue · ${hold.length} projects`),hold.length?'amber':'')}
+  ${kpi(L('مشاريع متجاوزة موعدها','Projects past due'),`${od.length}/${open.length}`,L('غير مكتملة وتاريخها المخطط مضى','unfinished, planned end passed'),od.length?'red':'green')}
+  ${kpi(L('تركّز أكبر 3 عملاء','Top-3 client share'),pct(top3),L('من إجمالي الإيراد','of total revenue'),top3>.5?'amber':'')}
+ </div>
+ <div class="g21">
+  <div class="panel"><h3>${L('خريطة المحفظة: أين يقع الربح وأين يقع الخطر؟','Portfolio map: where profit and risk sit')}</h3><p class="sub">${L('كل نقطة مشروع. المحور الأفقي حجم العقد، والعمودي الهامش. الإطار الأحمر = متجاوز موعده. اضغط على نقطة لفتح تفاصيلها.','Each dot is a project: size on X, margin on Y. Red ring = past due. Click a dot for details.')}</p>
+   <div class="legend">${Object.keys(SC).map(k=>`<span><i style="background:${SC[k]}"></i>${nm('status',k)} (${cnt(k)})</span>`).join('')}</div>${scatter(P)}</div>
+  <div class="panel"><h3>${L('ما الذي تقوله الأرقام','What the numbers say')}</h3><p class="sub">${L('تُحدَّث تلقائياً مع الفلاتر','Updates with the filters')}</p><ul class="ins">${ins.map(i=>`<li class="${i[0]}">${i[1]}</li>`).join('')}</ul></div>
+ </div>
+ <div class="g2">
+  <div class="panel"><h3>${L('حسب الخدمة','By service')}</h3><p class="sub">${L('الشريط = الإيراد · الخانة = هامش الربح (أخضر/أحمر مقارنة بمتوسط المحفظة)','Bar = revenue · chip = margin (green/red vs portfolio average)')}</p>${breakdown(P,p=>p.service,k=>nm('service',k))}</div>
+  <div class="panel"><h3>${L('حسب المنطقة','By region')}</h3><p class="sub">&nbsp;</p>${breakdown(P,p=>p.region,k=>nm('region',k))}</div>
+  <div class="panel"><h3>${L('حسب القطاع','By sector')}</h3><p class="sub">&nbsp;</p>${breakdown(P,p=>p.sector,k=>nm('sector',k))}</div>
+  <div class="panel"><h3>${L('أكبر العملاء','Top clients')}</h3><p class="sub">${L('بين القوسين عدد المشاريع','Project count in brackets')}</p>${breakdown(P,p=>p.ClientID,k=>cn(cl[k].ClientName),8)}</div>
+ </div>`}
+
+function trendView(){
+ const P=getP();if(!P.length)return empty();
+ const dt=p=>S.basis==='end'?p.ed:p.sd;
+ const all=D.projects.map(dt),mn=new Date(Math.min(...all)),mxd=new Date(Math.max(...all));
+ const ms=monthsRange(mn,mxd),by=new Map();P.forEach(p=>{const d=dt(p),k=mk(d.getFullYear(),d.getMonth());const o=by.get(k)||{v:0,n:0};o.v+=p.Revenue;o.n++;by.set(k,o)});
+ let c=0;const series=ms.map(([y,m])=>{const o=by.get(mk(y,m))||{v:0,n:0};c+=o.v;return{label:ml(y,m),v:o.v,c,n:o.n}});
+ const gs=D.projects.map(p=>p.sd),ge=D.projects.map(p=>p.ed);
+ const g0=new Date(Math.min(...gs)),g1=new Date(Math.max(...ge,REF)),span=g1-g0;
+ const pos=d=>((d-g0)/span*100);
+ const rows=[...P].sort((a,b)=>a.sd-b.sd).map(p=>`<div class="row"><div class="lab" title="${esc(p.ProjectID+' '+cn(cl[p.ClientID].ClientName))}">${p.ProjectID} · ${cn(cl[p.ClientID].ClientName)}</div><div class="tr"><div class="bar2" style="left:${pos(p.sd)}%;width:${pos(p.ed)-pos(p.sd)}%;background:${SC[p.Status]};${p.overdue?'outline:2px solid var(--red);outline-offset:1px':''}" ${tip(p.ProjectID+' · '+nm('status',p.Status)+'\n'+dstr(p.sd)+' → '+dstr(p.ed)+(p.overdue?'\n'+L('متأخر '+p.late+' يوم','Overdue '+p.late+' days'):''))}></div></div></div>`).join('');
+ const yrs=[];for(let y=g0.getFullYear();y<=g1.getFullYear();y++)for(const m of [0,3,6,9]){const d=new Date(y,m,1);if(d>=g0&&d<=g1)yrs.push(`<span style="left:${pos(d)}%">${ml(y,m)}</span>`)}
+ return `<div class="panel"><div class="row-h"><div><h3>${L('الإيراد الشهري والتراكمي','Monthly and cumulative revenue')}</h3><p class="sub">${L('يُنسب كامل قيمة المشروع إلى شهر واحد؛ اختر الأساس. (الأعمدة = الشهر، الخط = التراكمي، المحور الأيمن بالمليون)','Full project value is booked in a single month; choose the basis. (Bars = month, line = cumulative, right axis in M)')}</p></div>
+  <div class="seg"><button data-basis="end" class="${S.basis==='end'?'on':''}">${L('تاريخ الانتهاء','End date')}</button><button data-basis="start" class="${S.basis==='start'?'on':''}">${L('تاريخ البدء','Start date')}</button></div></div>
+  ${combo(series)}</div>
+ <div class="panel"><h3>${L('الجدول الزمني للمشاريع','Project timeline')}</h3><p class="sub">${L('الخط الأحمر المتقطع = 1 نوفمبر 2026. الإطار الأحمر = مشروع لم يكتمل وتجاوز موعده.','Dashed red line = 1 Nov 2026. Red outline = unfinished and past planned end.')}</p>
+  <div class="legend">${Object.keys(SC).map(k=>`<span><i style="background:${SC[k]}"></i>${nm('status',k)}</span>`).join('')}</div>
+  <div class="scroll"><div class="gantt" style="min-width:640px"><div class="axis"><div></div><div class="t">${yrs.join('')}</div></div><div style="position:relative">${rows}<div style="position:absolute;inset:0 0 0 150px;pointer-events:none"><div class="ref" style="left:${pos(REF)}%"></div></div></div></div></div></div>`}
+
+function opsView(){
+ const T=getT();if(!T.length)return empty();
+ const open=T.filter(t=>t.Status==='Open'),hiOpen=open.filter(t=>t.Priority==='High');
+ const cT=T.filter(t=>t.Status==='Closed'&&t.hours!=null);const avg=cT.length?sum(cT,t=>t.hours)/cT.length:0,sla=cT.length?cT.filter(t=>t.hours<=S.sla).length/cT.length:0;
+ const prios=['High','Medium','Low'];
+ const pr=prios.map(k=>({k,list:T.filter(t=>t.Priority===k)})).filter(o=>o.list.length);
+ const avgBy=pr.map(o=>({...o,cl:o.list.filter(t=>t.Status==='Closed'&&t.hours!=null)})).filter(o=>o.cl.length).map(o=>({...o,a:sum(o.cl,t=>t.hours)/o.cl.length}));
+ const ms=monthsRange(new Date(Math.min(...D.tickets.map(t=>t.cd))),new Date(Math.max(...D.tickets.map(t=>t.cd)))),bm=new Map();
+ T.forEach(t=>{const k=mk(t.cd.getFullYear(),t.cd.getMonth());bm.set(k,(bm.get(k)||0)+1)});
+ const mser=ms.map(([y,m])=>({label:ml(y,m),v:bm.get(mk(y,m))||0,tip:ml(y,m)+': '+(bm.get(mk(y,m))||0)+L(' تذكرة',' tickets')}));
+ const byCl=new Map();T.forEach(t=>{const o=byCl.get(t.ClientID)||{Open:0,Closed:0};o[t.Status]++;byCl.set(t.ClientID,o)});
+ const clRows=[...byCl.entries()].sort((a,b)=>(b[1].Open+b[1].Closed)-(a[1].Open+a[1].Closed)).slice(0,8).map(([id,o])=>({label:cn(cl[id].ClientName),vals:o}));
+ let flat='';const hi=avgBy.find(o=>o.k==='High'),lo=avgBy.find(o=>o.k==='Low');
+ if(hi&&lo&&Math.abs(hi.a-lo.a)<2)flat=L(`<b>ملاحظة:</b> متوسط حل التذاكر المغلقة عالية الأولوية (${hi.a.toFixed(1)} ساعة) يكاد يساوي منخفضة الأولوية (${lo.a.toFixed(1)}) — الأولوية لا تؤثر فعلياً في سرعة المعالجة.`,`<b>Note:</b> high-priority closed tickets average ${hi.a.toFixed(1)}h vs ${lo.a.toFixed(1)}h for low — priority is not changing handling speed.`);
+ return `<div class="kpis">
+  ${kpi(L('إجمالي التذاكر','Total tickets'),N(T.length),L(`مغلقة ${T.length-open.length}`,`${T.length-open.length} closed`))}
+  ${kpi(L('تذاكر مفتوحة','Open tickets'),N(open.length),pct(open.length/T.length)+L(' من الإجمالي',' of total'),open.length/T.length>.4?'amber':'')}
+  ${kpi(L('مفتوحة عالية الأولوية','Open high-priority'),N(hiOpen.length),L(`من ${T.filter(t=>t.Priority==='High').length} تذكرة عالية`,`of ${T.filter(t=>t.Priority==='High').length} high tickets`),hiOpen.length?'red':'green')}
+  ${kpi(L('متوسط ساعات الحل','Avg resolution hours'),avg.toFixed(1),L(`للتذاكر المغلقة (${cT.length})`,`closed tickets (${cT.length})`))}
+  ${kpi(L(`مغلقة ضمن ${S.sla} ساعات (SLA)`,`Closed within ${S.sla}h (SLA)`),pct(sla),`<select data-sla aria-label="SLA">${[4,8,24].map(h=>`<option value="${h}" ${S.sla===h?'selected':''}>${L('حد الـSLA: ','SLA limit: ')}${h}${L(' ساعة','h')}</option>`).join('')}</select>`)}
+ </div>
+ ${flat?`<div class="panel" style="border-inline-start:3px solid var(--amber)">${flat}</div>`:''}
+ <div class="g2">
+  <div class="panel"><h3>${L('التذاكر حسب الأولوية والحالة','Tickets by priority and status')}</h3><p class="sub">&nbsp;</p>${stack(pr.map(o=>({label:nm('prio',o.k),vals:{Open:o.list.filter(t=>t.Status==='Open').length,Closed:o.list.filter(t=>t.Status==='Closed').length}})),[{key:'Open',color:'var(--amber)',label:nm('tstat','Open')},{key:'Closed',color:'var(--green)',label:nm('tstat','Closed')}])}</div>
+  <div class="panel"><h3>${L('متوسط ساعات الحل حسب الأولوية','Avg resolution hours by priority')}</h3><p class="sub">&nbsp;</p><div class="bk">${avgBy.map(o=>`<div class="r" style="grid-template-columns:8.6rem 1fr 4.6rem"><span>${nm('prio',o.k)}</span><div class="track"><div class="fill" style="background:var(--blue);width:${o.a/Math.max(...avgBy.map(x=>x.a))*100}%"></div></div><span class="num">${o.a.toFixed(1)}</span></div>`).join('')}</div><p class="note" style="margin-top:8px">${L('للتذاكر المغلقة فقط: ','Closed tickets only: ')}${avgBy.map(o=>nm('prio',o.k)+' '+o.cl.length).join(' · ')}</p></div>
+  <div class="panel"><h3>${L('التذاكر المُنشأة شهرياً','Tickets created per month')}</h3><p class="sub">&nbsp;</p>${cols(mser)}</div>
+  <div class="panel"><h3>${L('أكثر العملاء تذاكر','Clients with most tickets')}</h3><p class="sub">${L('العميل مشتق من مشروع التذكرة','Client derived from the ticket’s project')}</p>${stack(clRows,[{key:'Open',color:'var(--amber)',label:nm('tstat','Open')},{key:'Closed',color:'var(--green)',label:nm('tstat','Closed')}])}</div>
+ </div>`}
+
+function assetsView(){
+ const A=getA();if(!A.length)return empty();
+ const tv=sum(A,a=>a.value),act=A.filter(a=>a.Status==='Active'),ret=A.filter(a=>a.Status==='Retired'),av=sum(act,a=>a.value),rv=sum(ret,a=>a.value);
+ const types=[...new Set(A.map(a=>a.AssetType))];
+ const segs=[{key:'Active',color:'var(--green)',label:nm('astat','Active')},{key:'Retired',color:'var(--gray)',label:nm('astat','Retired')}];
+ const mkRows=(f,fmt)=>types.map(t=>({label:nm('atype',t),fmt,vals:{Active:f(A.filter(a=>a.AssetType===t&&a.Status==='Active')),Retired:f(A.filter(a=>a.AssetType===t&&a.Status==='Retired'))}}));
+ const byC=new Map();A.forEach(a=>{const o=byC.get(a.ClientID)||{Active:0,Retired:0};o[a.Status]+=a.value;byC.set(a.ClientID,o)});
+ const cr=[...byC.entries()].sort((a,b)=>(b[1].Active+b[1].Retired)-(a[1].Active+a[1].Retired)).map(([id,o])=>({label:cn(cl[id].ClientName),vals:o,fmt:M}));
+ return `<div class="kpis">
+  ${kpi(L('عدد الأصول','Assets'),N(A.length),L(`${act.length} قيد الخدمة`,`${act.length} in service`))}
+  ${kpi(L('القيمة الإجمالية','Total value'),M(tv),L('تشمل الأصول خارج الخدمة','includes retired assets'))}
+  ${kpi(L('قيمة قيد الخدمة','In-service value'),M(av),pct(av/tv)+L(' من القيمة · '+pct(act.length/A.length)+' بالعدد',' of value · '+pct(act.length/A.length)+' by count'),'green')}
+  ${kpi(L('قيمة خارج الخدمة','Retired value'),M(rv),L(`${ret.length} أصلاً (${pct(ret.length/A.length)})`,`${ret.length} assets (${pct(ret.length/A.length)})`),ret.length/A.length>.4?'amber':'')}
+ </div>
+ ${(S.service!=='all'||S.status!=='all')?`<div class="note">${L('ملاحظة: الأصول تتأثر بفلاتر المنطقة والقطاع فقط.','Note: assets respond to region and sector filters only.')}</div>`:''}
+ <div class="g2">
+  <div class="panel"><h3>${L('عدد الأصول حسب النوع','Asset count by type')}</h3><p class="sub">&nbsp;</p>${stack(mkRows(l=>l.length),segs)}</div>
+  <div class="panel"><h3>${L('قيمة الأصول حسب النوع','Asset value by type')}</h3><p class="sub">&nbsp;</p>${stack(mkRows(l=>sum(l,a=>a.value),M),segs)}</div>
+  <div class="panel" style="grid-column:1/-1"><h3>${L('قيمة الأصول حسب العميل','Asset value by client')}</h3><p class="sub">&nbsp;</p>${stack(cr,segs)}</div>
+ </div>`}
+
+function projRows(){
+ const q=S.q.trim().toLowerCase();
+ let P=getP().filter(p=>!q||[p.ProjectID,cn(cl[p.ClientID].ClientName),nm('service',p.service),nm('status',p.Status),p.region].join(' ').toLowerCase().includes(q));
+ const key={ProjectID:p=>p.ProjectID,client:p=>+p.ClientID.slice(1),service:p=>p.service,Status:p=>p.Status,ed:p=>p.ed,Revenue:p=>p.Revenue,profit:p=>p.profit,margin:p=>p.margin,late:p=>p.late}[S.sort];
+ P=[...P].sort((a,b)=>(key(a)>key(b)?1:key(a)<key(b)?-1:0)*S.dir);
+ return P.map(p=>`<tr><td>${p.ProjectID}</td><td>${cn(cl[p.ClientID].ClientName)}</td><td>${nm('service',p.service)}</td><td><span class="st"><i style="background:${SC[p.Status]}"></i>${nm('status',p.Status)}</span></td><td class="num">${dstr(p.ed)}</td><td class="n num">${N(p.Revenue)}</td><td class="n num">${N(p.profit)}</td><td class="n"><span class="chip num ${p.margin<.2?'bad':p.margin>.35?'good':''}">${pct(p.margin)}</span></td><td>${p.overdue?`<span class="badge num">${L('متأخر '+p.late+' يوم',p.late+'d overdue')}</span>`:''}</td></tr>`).join('')||`<tr><td colspan="9" class="empty">${L('لا نتائج','No results')}</td></tr>`}
+function projView(){
+ const H=[['ProjectID',L('المشروع','Project')],['client',L('العميل','Client')],['service',L('الخدمة','Service')],['Status',L('الحالة','Status')],['ed',L('الانتهاء المخطط','Planned end')],['Revenue',L('الإيراد','Revenue'),1],['profit',L('الربح','Profit'),1],['margin',L('الهامش','Margin'),1],['late',L('التأخر','Overdue')]];
+ return `<div class="panel"><div class="row-h" style="margin-bottom:10px"><div><h3>${L('سجل المشاريع','Project register')}</h3><p class="sub" style="margin:0">${L('اضغط على العنوان للترتيب','Click a header to sort')}</p></div><input class="search" data-q placeholder="${L('ابحث: مشروع، عميل، خدمة…','Search project, client, service…')}" value="${esc(S.q)}"></div>
+ <div class="scroll"><table><thead><tr>${H.map(h=>`<th data-sort="${h[0]}" class="${h[2]?'n':''}">${h[1]}${S.sort===h[0]?(S.dir>0?' ▲':' ▼'):''}</th>`).join('')}</tr></thead><tbody id="pbody">${projRows()}</tbody></table></div></div>`}
+
+function checks(){
+ const T=D.tickets,P=D.projects,A=D.assets,C=D.clients;
+ const openClosed=T.filter(t=>t.Status==='Open'&&(t.ClosedDate||t.hours!=null)).length,openN=T.filter(t=>t.Status==='Open').length;
+ const mism=T.filter(t=>t.ClientID!==pj[t.ProjectID].ClientID).length;
+ const outside=T.filter(t=>t.cd<pj[t.ProjectID].sd||t.cd>pj[t.ProjectID].ed).length;
+ const od=P.filter(p=>p.overdue).length,opn=P.filter(p=>p.Status!=='Completed').length;
+ const ret=A.filter(a=>a.Status==='Retired'),noProj=C.filter(c=>!P.some(p=>p.ClientID===c.ClientID));
+ const holdRev=sum(P.filter(p=>p.Status==='On Hold'),p=>p.Revenue);
+ const orph=P.filter(p=>!cl[p.ClientID]||!sv[p.ServiceID]).length+T.filter(t=>!cl[t.ClientID]||!pj[t.ProjectID]).length+A.filter(a=>!cl[a.ClientID]).length;
+ const dup=['clients:ClientID','projects:ProjectID','tickets:TicketID','assets:AssetID'].reduce((s,x)=>{const[t,k]=x.split(':');return s+D[t].length-new Set(D[t].map(r=>r[k])).size},0);
+ const nulls=['clients','services','projects','tickets','assets'].reduce((s,t)=>s+D[t].reduce((z,r)=>z+Object.values(r).filter(v=>v===''||v==null).length,0),0);
+ const badDates=P.filter(p=>p.ed<p.sd||p.Cost>p.Revenue).length+T.filter(t=>new Date(t.ClosedDate)<new Date(t.CreatedDate)).length;
+ return [
+ {sev:openClosed?'high':'pass',t:L('تذاكر "مفتوحة" لها تاريخ إغلاق','"Open" tickets carry a closed date'),f:`${openClosed}/${openN}`,why:L('كل التذاكر المفتوحة لها ClosedDate وساعات حل — حالة التذكرة وتاريخ إغلاقها متناقضان، فتصبح مؤشرات المفتوح/المغلق وSLA غير موثوقة.','Every open ticket has a ClosedDate and resolution hours — status and dates contradict, so open/closed and SLA KPIs are unreliable.'),fix:`UPDATE Tickets SET ClosedDate = NULL, ResolutionHours = NULL\nWHERE Status = 'Open';   -- أو صحّح Status إلى Closed`},
+ {sev:mism?'high':'pass',t:L('عميل التذكرة ≠ عميل المشروع','Ticket client ≠ project client'),f:`${mism}/${T.length}`,why:L('التذكرة تحمل ClientID وProjectID معاً وهما لا يتطابقان تقريباً دائماً. هذا يكسر النموذج: مسارا علاقة بين العميل والتذاكر ونتائج متضاربة حسب المسار.','Tickets hold both ClientID and ProjectID and they almost never agree. This breaks the model: two paths from client to tickets and conflicting results.'),fix:`-- احذف ClientID من Tickets واشتقّه عبر المشروع\nALTER TABLE Tickets DROP COLUMN ClientID;\n-- العميل = Projects.ClientID عبر ProjectID`},
+ {sev:'high',t:L('مشاريع غير مكتملة تجاوزت تاريخ انتهائها','Unfinished projects past planned end'),f:`${od}/${opn}`,why:L('كل المشاريع النشطة والمعلّقة انتهى تاريخها المخطط. إما أن الحالة لم تُحدَّث أو أن المحفظة متأخرة بالكامل.','All active and on-hold projects are past their planned end. Either statuses are stale or the whole portfolio is late.'),fix:`SELECT ProjectID, Status, EndDate,\n  DATEDIFF(DAY, EndDate, GETDATE()) AS DaysLate\nFROM Projects\nWHERE Status <> 'Completed' AND EndDate < CAST(GETDATE() AS DATE);`},
+ {sev:'med',t:L('تذاكر خارج الفترة الزمنية لمشروعها','Tickets outside their project window'),f:`${outside}/${T.length}`,why:L('تذاكر أُنشئت قبل بدء المشروع أو بعد انتهائه — غالباً ربط خاطئ بين التذكرة والمشروع.','Tickets created before project start or after its end — likely wrong ticket-to-project link.'),fix:`SELECT t.TicketID, t.CreatedDate, p.StartDate, p.EndDate\nFROM Tickets t JOIN Projects p ON p.ProjectID = t.ProjectID\nWHERE t.CreatedDate NOT BETWEEN p.StartDate AND p.EndDate;`},
+ {sev:'med',t:L('الأصول خارج الخدمة ضمن القيمة الإجمالية','Retired assets inside total value'),f:`${ret.length}/${A.length}`,why:L(`قيمتها ${M(sum(ret,a=>a.value))}. إن كانت المقياس "قيمة الأصول" يشملها فهو يضخّم رأس المال العامل. اعتمد مقياسين: الإجمالي وقيد الخدمة.`,`Worth ${M(sum(ret,a=>a.value))}. If the "Assets Value" measure includes them it overstates working capital. Report both total and in-service.`),fix:`Assets Value (In Service) =\nCALCULATE ( SUM ( FactAssets[AssetValue] ),\n            FactAssets[Status] = "Active" )`},
+ {sev:'med',t:L('الإيراد يشمل مشاريع معلّقة','Revenue includes on-hold projects'),f:M(holdRev),why:L('"الإيراد" هنا = قيمة العقد الكاملة بغض النظر عن الحالة. افصل: إيراد محقق (مكتمل) / قيد التنفيذ / معلّق، وإلا تُقرأ الأرقام كأنها محققة.','"Revenue" here = full contract value regardless of status. Split realised (completed) / in progress / on hold or numbers read as realised.'),fix:`Revenue Completed =\nCALCULATE ( [Revenue], FactProjects[Status] = "Completed" )`},
+ {sev:'low',t:L('عميل بلا مشاريع','Client without projects'),f:`${noProj.length}`,why:L(noProj.map(c=>cn(c.ClientName)).join('، ')+' لديه أصول لكن لا مشاريع. فرصة مبيعات أو سجل غير نشط؟','Has assets but no projects. Sales opportunity or dormant record?'),fix:`SELECT c.* FROM Clients c\nLEFT JOIN Projects p ON p.ClientID = c.ClientID\nWHERE p.ProjectID IS NULL;`},
+ {sev:'pass',t:L('مفاتيح فريدة (لا تكرار)','Unique keys (no duplicates)'),f:`${dup}`,why:L('اجتاز الفحص.','Passed.')},
+ {sev:'pass',t:L('سلامة الربط (لا يتامى)','Referential integrity (no orphans)'),f:`${orph}`,why:L('اجتاز الفحص.','Passed.')},
+ {sev:'pass',t:L('لا قيم فارغة','No empty values'),f:`${nulls}`,why:L('اجتاز الفحص.','Passed.')},
+ {sev:'pass',t:L('منطق التواريخ والتكلفة','Date and cost logic'),f:`${badDates}`,why:L('لا مشروع ينتهي قبل أن يبدأ، ولا تكلفة أعلى من الإيراد، ولا تذكرة تُغلق قبل إنشائها.','No project ends before it starts, no cost above revenue, no ticket closed before created.')}];
+}
+function healthView(){
+ const c=checks().map(x=>x.sev==='pass'&&x.fix?{...x,why:L('تم إصلاحه وتحقق منه (القيمة 0).','Fixed and verified (value 0).'),fix:''}:x),pass=c.filter(x=>x.sev==='pass').length,lab={high:L('حرج','High'),med:L('متوسط','Medium'),low:L('منخفض','Low'),pass:L('سليم','Pass')};
+ return `<div class="panel"><div class="score"><b class="num">${pass}/${c.length}</b><span>${L('فحوصات سليمة. ما تبقى يتعلق بتعريف المقاييس وبجودة ربط التذاكر بالمشاريع.','checks passed. What remains concerns metric definitions and ticket-to-project linking quality.')}</span></div></div>
+ <div class="panel">${c.map(x=>`<div class="hc"><div class="sev ${x.sev}">${lab[x.sev]}<div class="num" style="font-weight:500">${x.f}</div></div><div><h4>${x.t}</h4><p>${x.why}</p>${x.fix?`<code>${esc(x.fix)}</code>`:''}</div></div>`).join('')}</div>`}
+
+// ---------- shell ----------
+function render(){
+ const dts=D.projects.flatMap(p=>[p.sd,p.ed]),mn=new Date(Math.min(...dts)),mx=new Date(Math.max(...dts));
+ const f=(k,label,opts)=>`<label>${label}<select data-f="${k}"><option value="all">${L('الكل','All')}</option>${opts.map(o=>`<option value="${o}" ${S[k]===o?'selected':''}>${nm(k,o)}</option>`).join('')}</select></label>`;
+ const tabs=[['exec',L('الملخص التنفيذي','Executive')],['trend',L('الإيراد والجدول الزمني','Revenue & timeline')],['ops',L('العمليات والدعم','Operations')],['assets',L('الأصول','Assets')],['proj',L('المشاريع','Projects')],['health',L('جودة البيانات','Data health')]];
+ const views={exec:execView,trend:trendView,ops:opsView,assets:assetsView,proj:projView,health:healthView};
+ const uniq=a=>[...new Set(a)];
+ document.documentElement.setAttribute('data-theme',S.theme);document.documentElement.lang=S.lang;document.documentElement.dir=S.lang==='ar'?'rtl':'ltr';
+ document.getElementById('app').innerHTML=`<header class="top"><div class="wrap"><div><h1>${L('لوحة القيادة التنفيذية — الأداء والعمليات والأصول','Executive dashboard — performance, operations and assets')}</h1><p>${L(`${D.projects.length} مشروعاً · ${D.tickets.length} تذكرة · ${D.assets.length} أصلاً · ${D.clients.length} عملاء · من ${ml(mn.getFullYear(),mn.getMonth())} إلى ${ml(mx.getFullYear(),mx.getMonth())}`,`${D.projects.length} projects · ${D.tickets.length} tickets · ${D.assets.length} assets · ${D.clients.length} clients · ${ml(mn.getFullYear(),mn.getMonth())} to ${ml(mx.getFullYear(),mx.getMonth())}`)}</p></div><div class="hbtns"><button class="langbtn" data-mode aria-label="theme">${S.theme==='dark'?L('☀ الوضع الفاتح','☀ Light mode'):L('☾ الوضع الداكن','☾ Dark mode')}</button><button class="langbtn" data-lang>${L('English','العربية')}</button></div></div></header>
+ <div class="bar"><div class="wrap"><div class="filters">${f('region',L('المنطقة','Region'),uniq(D.clients.map(c=>c.Region)))}${f('sector',L('القطاع','Sector'),uniq(D.clients.map(c=>c.Sector)))}${f('service',L('الخدمة','Service'),D.services.map(s=>s.ServiceName))}${f('status',L('حالة المشروع','Project status'),['Active','On Hold','Completed'])}<button class="reset" data-reset>${L('إعادة ضبط','Reset')}</button></div>
+ <nav class="tabs">${tabs.map(t=>`<button data-tab="${t[0]}" class="${S.tab===t[0]?'on':''}">${t[1]}</button>`).join('')}</nav></div></div>
+ <div class="wrap"><main>${views[S.tab]()}</main>
+ <footer>${L('تعريفات وافتراضات','Definitions and assumptions')}<ul>
+ <li>${L('الإيراد = قيمة العقد الكاملة لكل مشروع بغض النظر عن حالته. الهامش = (الإيراد − التكلفة) ÷ الإيراد.','Revenue = full contract value per project regardless of status. Margin = (Revenue − Cost) ÷ Revenue.')}</li>
+ <li>${L('متجاوز الموعد = مشروع غير مكتمل وتاريخ انتهائه المخطط قبل 1 نوفمبر 2026.','Past due = unfinished project whose planned end is before 1 Nov 2026.')}</li>
+ <li>${L('العملة غير محددة في الملفات؛ تُعرض الأرقام بوحدة العملة الأصلية (م = مليون). حدّد العملة قبل العرض الرسمي.','Currency is not specified in the source files; figures are shown in source units (M = million). Confirm the currency before presenting.')}</li>
+ <li>${L('الفلاتر تُطبَّق على التذاكر عبر مشروعها (عميله وخدمته وحالته)، وعلى الأصول عبر عميلها فقط.','Filters reach tickets through their project (its client, service and status); assets via client only.')}</li></ul></footer></div>`;
+}
+
+// ---------- events ----------
+const app=document.getElementById('app');
+app.addEventListener('click',e=>{const t=e.target.closest('[data-tab],[data-lang],[data-mode],[data-reset],[data-basis],[data-sort],[data-dot]');if(!t)return;
+ if(t.dataset.tab){S.tab=t.dataset.tab}
+ else if('lang' in t.dataset){S.lang=S.lang==='ar'?'en':'ar'}
+ else if('mode' in t.dataset){S.theme=S.theme==='dark'?'light':'dark';try{localStorage.setItem('mis-theme',S.theme)}catch(e){}}
+ else if('reset' in t.dataset){S.region=S.sector=S.service=S.status='all'}
+ else if(t.dataset.basis){S.basis=t.dataset.basis}
+ else if(t.dataset.sort){S.dir=S.sort===t.dataset.sort?-S.dir:1;S.sort=t.dataset.sort}
+ else if(t.dataset.dot){S.q=t.dataset.dot;S.tab='proj';S.region=S.sector=S.service=S.status='all'}
+ render();hideTip();if(t.dataset.tab||t.dataset.dot)window.scrollTo({top:0})});
+app.addEventListener('change',e=>{const t=e.target;if(t.dataset.f){S[t.dataset.f]=t.value;render()}else if('sla' in t.dataset){S.sla=+t.value;render()}});
+app.addEventListener('input',e=>{if('q' in e.target.dataset){S.q=e.target.value;document.getElementById('pbody').innerHTML=projRows()}});
+const tp=document.getElementById('tip');
+function hideTip(){tp.style.display='none'}
+document.addEventListener('mousemove',e=>{const t=e.target.closest&&e.target.closest('[data-tip]');if(!t){hideTip();return}
+ tp.innerHTML=esc(t.dataset.tip).replace(/\n/g,'<br>');tp.style.display='block';
+ const w=tp.offsetWidth,h=tp.offsetHeight;let x=e.clientX+14,y=e.clientY+16;if(x+w>innerWidth-8)x=e.clientX-w-14;if(y+h>innerHeight-8)y=e.clientY-h-12;tp.style.left=x+'px';tp.style.top=y+'px'});
+document.addEventListener('mouseleave',hideTip);
+render();
+})();
+</script>
+</body>
+</html>

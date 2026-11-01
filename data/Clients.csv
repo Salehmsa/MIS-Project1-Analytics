@@ -1,0 +1,11 @@
+ClientID,ClientName,Sector,Region
+C001,Client 1,Healthcare,Dammam
+C002,Client 2,Healthcare,Dammam
+C003,Client 3,Telecom,Riyadh
+C004,Client 4,Telecom,Jeddah
+C005,Client 5,Finance,Riyadh
+C006,Client 6,Government,Jeddah
+C007,Client 7,Government,Jeddah
+C008,Client 8,Government,Riyadh
+C009,Client 9,Finance,Riyadh
+C010,Client 10,Finance,Jeddah
