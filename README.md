@@ -2,7 +2,7 @@
 
 An end-to-end business intelligence project for an IT services company: a SQL Server data model, a Power BI report, and an interactive HTML executive dashboard, built to answer one question for management: **where does the company actually make money, and where is the risk?**
 
-> **Live dashboard:** `https://salehmsa.github.io/MIS-Project1-Analytics/dashboard/` *(enable GitHub Pages, see below)*
+> **Live dashboard:** [Open the interactive dashboard](https://salehmsa.github.io/MIS-Project1-Analytics/dashboard/)
 > **Author:** Saleh Mahbub · [GitHub: Salehmsa](https://github.com/Salehmsa)
 
 ![Executive dashboard](docs/screenshots/executive-dashboard.jpg)
