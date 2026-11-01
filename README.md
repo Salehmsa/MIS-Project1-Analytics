@@ -1,4 +1,6 @@
-﻿# MIS Executive Analytics: Projects, Operations & Assets
+﻿**English** | [العربية](README.ar.md)
+
+# MIS Executive Analytics: Projects, Operations & Assets
 
 An end-to-end business intelligence project for an IT services company: a SQL Server data model, a Power BI report, and an interactive HTML executive dashboard, built to answer one question for management: **where does the company actually make money, and where is the risk?**
 
