@@ -2,7 +2,7 @@
 
 An end-to-end business intelligence project for an IT services company: a SQL Server data model, a Power BI report, and an interactive HTML executive dashboard, built to answer one question for management: **where does the company actually make money, and where is the risk?**
 
-> **Live dashboard:** `https://<your-username>.github.io/<repo-name>/` *(enable GitHub Pages, see below)*
+> **Live dashboard:** `https://salehmsa.github.io/MIS-Project1-Analytics/dashboard/` *(enable GitHub Pages, see below)*
 > **Author:** Saleh Mahbub · [GitHub: Salehmsa](https://github.com/Salehmsa)
 
 ![Executive dashboard](docs/screenshots/executive-dashboard.jpg)
@@ -115,7 +115,7 @@ CALCULATE(SUM(FactAssets[AssetValue]), FactAssets[Status] = "Active")
 
 **HTML dashboard:** open `dashboard/index.html` in a browser. It works offline, supports Arabic/English, light/dark mode, and global filters by region, sector, service and project status.
 
-**Publish on GitHub Pages:** *Settings → Pages → Deploy from branch → `main` / `/dashboard`* (or move `index.html` to the repo root).
+**Publish on GitHub Pages:** *Settings → Pages → Deploy from branch → `main` / `/ (root)`* (the root `index.html` redirects to `dashboard/`).
 
 ## 8. Tech stack
 
